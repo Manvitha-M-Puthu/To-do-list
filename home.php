@@ -24,27 +24,55 @@ while ($row = $result->fetch_assoc()) {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>To-Do List</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My To-Do List</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="container">
-    <h2>Welcome! Your To-Do List</h2>
+    <h2>✨ Your To-Do List</h2>
+    
     <form method="post">
-        <input type="text" name="task" placeholder="New Task" required>
-        <button type="submit">Add</button>
+        <input type="text" name="task" placeholder="What needs to be done?" required>
+        <button type="submit">Add Task</button>
     </form>
-    <ul>
-        <?php foreach ($tasks as $task): ?>
-            <li>
-                <?php echo htmlspecialchars($task['task']); ?>
-                <a href="delete.php?id=<?php echo $task['id']; ?>">❌</a>
-            </li>
-        <?php endforeach; ?>
-    </ul>
-    <a href="logout.php">Logout</a>
+    
+    <?php if (empty($tasks)): ?>
+        <div class="empty-state">
+            <p>No tasks yet! Add one above to get started.</p>
+        </div>
+    <?php else: ?>
+        <ul>
+            <?php foreach ($tasks as $task): ?>
+                <li>
+                    <span><?php echo htmlspecialchars($task['task']); ?></span>
+                    <a href="delete.php?id=<?php echo $task['id']; ?>" class="delete-btn" 
+                       onclick="return confirm('Are you sure you want to delete this task?')">✕</a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
+    
+    <a href="logout.php" class="logout-btn">Logout</a>
 </div>
+
+<script>
+// Add some interactivity
+document.querySelector('form').addEventListener('submit', function(e) {
+    const button = this.querySelector('button');
+    const input = this.querySelector('input[name="task"]');
+    
+    if (input.value.trim()) {
+        button.classList.add('loading');
+        button.disabled = true;
+    }
+});
+
+// Auto-focus the input field
+document.querySelector('input[name="task"]').focus();
+</script>
 </body>
 </html>
